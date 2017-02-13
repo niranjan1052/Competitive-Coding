@@ -1,0 +1,35 @@
+
+ Problem 1: (25 points): 
+
+1.	(10 points) Briefly describe the various techniques used in cluster-based websevers for load distribution. 
+Ans.1) Cluster based Webservers use following techniques for load-distribution,
+•	Round-Robin DNS (load balancing on clusters)
+It is a load-distribution technique used for distributing the client requests among the nodes/servers in the cluster. Here a node designated as Frond-End server stores a list of IP addresses of all the nodes in the cluster server. This also performs a DNS resolution task where in it randomly permutes the list of IP-Addresses of all the nodes in the server. So whenever a client requests for a connection, it usually picks the first one. i.e. the server at the top of the permuted list. Once a server is assigned to a client, the front-end server again performs a DNS resolution request putting a different node IP at the top. Thus load gets balanced/distributed to different nodes for each client request.
+
+•	Cisco’s Local Director (Gateway approach)
+Gateway approach is a load balancing technique that makes use of a gateway/router to distribute the client requests or forward the connection requests to one of backend nodes.
+Here we have a gateway device that receives the requests from the client, i.e. So client connects to the gateway IP. Then gateway randomly selects a backend node without being aware of the content of the packet. For each request It performs the mapping of the destination IP address of packet to the IP address of chosen node in the cluster (NAT Address Translation). Thus the client packets are forwarded to that node. Then selected node performs a 3-way handshake with client and then data is relayed between node and client at router speeds through the gateway.
+•	TCP handoff
+This is a Content-Aware distribution technique where the Front-End server performs a 3-way handshake with the client, opens a TCP connection and keeps receiving packets. It then analyses the contents of the request packet at layer 7. Based on the type of content being requested, it selects a backend server. This further updates a routing table at the kernel level to map the client request to corresponding backend server being chosen. So for each packet its destination IP address is changed to that of its backend server. Then server processes the requests and sends the response directly to client. So advantage here is that response messages are sent directly to client from the server.
+•	TCP splicing
+In this model of load-distribution to splice two connections inside a kernel so as to achieve data transfer speed of router-level speed. Here the Frond-End server creates a TCp connection with client and analyses the content of the request packet at application level, then selects the appropriate backend server. Then at the kernel level the two TCP connections i.e. between client and front end and front-end and backend server are spliced together so that further data relay between these two occur at a router-level speed. The routing tables are updated at the kernel level and response from server are routed through front-end server but at TCP level.
+•	DNS redirection for service replica selection in WAN
+
+
+
+
+
+
+
+2.	(5 points) What is the notion of content-aware request scheduling in cluster-based webservers? 
+Ans. In cluster-bases servers there is usually a gateway/front-end server that handles the process of choosing one of the server nodes in cluster based on different criteria. So while backend servers could be chosen randomly by the front-end server, but if the chosen backend server does not have the data being requested by the packet then this process of choosing another server needs to be re-performed. So it can lead to unnecessary duplicate work and network congestion if the backend server is chosen without the knowledge of the content being requested for. To avoid this the notion of the Content-aware request handling can be used. It is a technique where in the content of the request packet is analyzed at the application level (layer 7) by the Front-end server and an appropriate server is chosen for it. To perform this efficiently, the front-end server would ideally have data that maps the services/data provided and corresponding server nodes in the cluster.
+Thus making use of this mapping data and the content type information in the request packet, front-end server correctly identifies and assigns the server/node to the client.
+
+3. (10 points) Explain the difference between TCP-handoff and TCP-splicing. Which of these can be used for content-aware request distribution? Which of these is more scalable? 
+Ans. TCP-handoff and TCP-splicing are two methods used in load-balancing in cluster based web servers. The main differences between these two methods is that 
+•	in TCP-handoff there is a direct TCP connection created between backend server being chosen and the client. But there is no direct network level connection between the backend server and client.
+•	In TCP-handoff the response from the backend server is sent directly to the client instead of being redirected back through the gateway/front-end server. But in TCP-splicing the response message from the backend server is sent back to client through the front-end server itself. In splicing the two TCP connections, one between client and front-end and another between frontend server and backend server are spiced together with kernel level alteration. So both request and response are directed via the gateway in splicing.
+Both of these methods can be used for content-aware request distribution.
+Among these, TCP-handoff is more scalable because in this method the front-end server only handles the requests coming from the client. Once the request packets are forwarded to the backend server, the server processes the request and sends the response back directly to the client. So ideally the load on the front-end server which is the bottleneck in the communication channel reduces in TCP-handoff. But where as in splicing because b 
+
+Ans 2.1)
